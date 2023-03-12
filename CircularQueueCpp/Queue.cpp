@@ -16,7 +16,7 @@ void Queue::enqueue(int x) {
 }
 
 bool Queue::isFull() {
-	if (rear+1 == front%10) return true;
+	if (rear+1 == front%MAX) return true;
 	return false;
 }
 
@@ -32,7 +32,7 @@ int Queue::dequeue() {
 }
 
 bool Queue::isEmpty() {
-	if (front-1 == rear%10) return true;
+	if (front-1 == rear%MAX) return true;
 	return false;
 }
 
