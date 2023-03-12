@@ -4,9 +4,17 @@
 
 Queue::Queue() {
 	front = 0;
-	rear = 1;
+	rear = 0;
 
 	for (int i = 0; i < MAX; i++) s[i] = 0;
+}
+
+void Queue::print() {
+	printf("%d %d\n", front, rear);
+	for (int i = 0; i < MAX; i++) {
+		printf("%d ", s[i]);
+	}
+	printf("\n");
 }
 
 void Queue::enqueue(int x) {
@@ -28,11 +36,11 @@ void Queue::overFlow() {
 int Queue::dequeue() {
 	if (isEmpty()) emptyError();
 	front = (front+1)%MAX;
-	return s[front+1];
+	return s[front];
 }
 
 bool Queue::isEmpty() {
-	if (front-1 == rear%MAX) return true;
+	if (front == rear) return true;
 	return false;
 }
 

@@ -14,6 +14,7 @@ void main()
 	printf("%d\n", q.dequeue());*/
 
 	Queue *q = new Queue();
+	q->print();
 	q->enqueue(10);
 	q->enqueue(20);
 	q->enqueue(30);
@@ -23,10 +24,11 @@ void main()
 	q->enqueue(50);
 	printf("%d\n", q->dequeue());
 
-	for (int i = 0; i < 20; i++) {
-		q->enqueue(i*100+1);
+	for (int i = 1; i < 20; i++) {
+		q->enqueue(i);
 		printf("%d\n", q->dequeue());
 	}
 
+	q->print();
 	delete q;
 }

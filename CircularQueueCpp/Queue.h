@@ -12,4 +12,5 @@ public:
 	Queue();
 	void enqueue(int x);
 	int dequeue();
+	void print();
 };
