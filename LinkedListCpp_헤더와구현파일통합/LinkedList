@@ -1,0 +1,628 @@
+#pragma once
+#include <iostream>
+using namespace std;
+
+//template <class Type>
+//class LinkedList<Type>;
+
+class Student {
+public:
+	char name[10];
+	bool gender;
+	int grade;
+	Student() {
+	}
+	Student(char *s, bool g, int grade) {
+		strcpy_s(name, s);
+		gender = g;
+		this->grade = grade;
+	}
+};
+ostream& operator<<(ostream& out, Student &s) {
+	out << s.name << ", " << s.gender << ", " << s.grade << "; ";
+	return out;
+}
+
+template <class Type>
+class Node 
+{
+public:
+	Type data;
+	Node *next;
+	Node(Type x) {
+		data = x;
+		next = NULL;
+	}
+//	friend LinkedList<Type>;
+//	friend ostream& operator<<(ostream& out, LinkedList<Type> &l);
+};
+
+template <class Type>
+class LinkedList
+{
+public:
+	Node<Type> *header;
+	int count;
+	LinkedList();
+	~LinkedList();
+	void addFirst(Type x);
+	void add(Type x);
+	void addLast(Type x);
+	void addAt(int index, Type x);
+	void addAllAt(LinkedList<Type> *list2, int index);
+	void clear();
+	bool contains(Type x);
+	LinkedList<Type>* clone();
+	Type element();
+	Type get(int index);
+	Type& operator[](int index);
+	Type getFirst();
+	Type getLast();
+	int indexOf(Type x);
+	int lastIndexOf(Type x);
+	void offer(Type x);
+	void offerFirst(Type x);
+	void offerLast(Type x);
+	Type peek();
+	Type peekFirst();
+	Type peekLast() {
+		Node<Type> *tmp;
+
+		if (header == NULL) {
+			cout << "List is empty" << endl;
+			exit(-1);
+		}
+		tmp = header;
+		while (tmp->next != NULL) {
+			tmp = tmp->next;
+		}
+		return tmp->data;	
+	};
+	Type poll();
+	Type pollFirst();
+	Type pollLast();
+	Type remove();
+	Type removeAt(int index);
+	Type remove(Type x);
+	Type removeFirst();
+	Type removeLast();
+	void set(int index, Type x);
+	Type* toArray();
+	inline int size() { return count; }
+//	friend ostream& operator<<(ostream& out, LinkedList &l);
+};
+
+template <class Type>
+ostream& operator<<(ostream& out, LinkedList<Type> &l)
+{
+	Node<Type> *tmp = l.header;
+	out << "[";
+	while (tmp != NULL) {
+		out << tmp->data;
+		if (tmp->next != NULL) out << ", ";
+		tmp = tmp->next;
+	}
+	out << "]" << endl;
+	return out;
+}
+
+
+template <class Type>
+LinkedList<Type>::LinkedList()
+{
+	header = NULL;
+	count = 0;
+}
+
+template <class Type>
+LinkedList<Type>::~LinkedList()
+{
+}
+
+template <class Type>
+void LinkedList<Type>::addFirst(Type x)
+{
+	Node<Type> *newNode = new Node<Type>(x);
+
+	count++;
+	newNode->next = header;
+	header = newNode;
+}
+
+
+
+template <class Type>
+void LinkedList<Type>::add(Type x)
+{
+	Node<Type> *newNode = new Node<Type>(x);
+	Node<Type> *tmp;
+
+	if (count == 0) {
+		header = newNode;
+		count++;
+		return;
+	}
+
+	tmp = header;
+	while (tmp->next != NULL) {
+		tmp = tmp->next;
+	}
+
+	tmp->next = newNode;
+	count++;
+	return;
+}
+
+template <class Type>
+void LinkedList<Type>::addLast(Type x)
+{
+	add(x);
+}
+
+template <class Type>
+void LinkedList<Type>::addAt(int index, Type x) 
+{
+	Node<Type> *newNode = new Node<Type>(x);
+	Node<Type> *tmp;
+
+	if (index == 0) {
+		addFirst(x);
+		return;
+	}
+	if (index > count) {
+		cout << "Index가 List 사이즈를 벗어났습니다" << endl;
+		return;
+	}
+	tmp = header;
+	for (int i = 0; i < index-1; i++) {
+		tmp = tmp->next;
+	}
+	newNode->next = tmp->next;
+	tmp->next = newNode;
+	count++;
+	return;
+}
+
+template <class Type>
+void LinkedList<Type>::addAllAt(LinkedList<Type> *list2, int index)
+{
+	Node<Type> *tmp;
+	int pos;
+
+	if (index > count) {
+		cout << "Index가 List 사이즈를 벗어났습니다" << endl;
+		return;
+	}
+
+	tmp = list2->header;
+	pos = index;
+	while (tmp != NULL) {
+		addAt(pos++, tmp->data);
+		tmp = tmp->next;
+	}
+
+	return;
+}
+
+template <class Type>
+void LinkedList<Type>::clear() 
+{
+	Node<Type> *tmp;
+	Node<Type> *follow;
+	
+	tmp = header;
+	follow = header;
+	while (tmp != NULL) {
+		follow = tmp;
+		tmp = tmp->next;
+		delete follow;
+	}
+	count = 0;
+	header = NULL;
+}
+
+template <class Type>
+LinkedList<Type>* LinkedList<Type>::clone()
+{
+	LinkedList<Type> *copied;
+	Node<Type> *tmp;
+
+	if (count == 0) return NULL;
+
+	copied = new LinkedList<Type>();
+
+	tmp = header;
+	while (tmp != NULL) {
+		copied->add(tmp->data);
+		tmp = tmp->next;
+	}
+
+	copied->count = count;
+	return copied;
+}
+
+template <class Type>
+bool LinkedList<Type>::contains(Type x)
+{
+	Node<Type> *tmp;
+
+	tmp = header;
+	while (tmp != NULL) {
+		if (tmp->data == x) return true;
+		tmp = tmp->next;
+	}
+	return false;
+}
+
+template <class Type>
+Type LinkedList<Type>::element()
+{
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	return header->data;
+}
+
+template <class Type>
+Type LinkedList<Type>::get(int index)
+{
+	Node<Type> *tmp;
+	Type value;
+
+	tmp = header;
+	if (count == 0) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	if (index == 0) {
+		value = tmp->data;
+		return value;
+	}
+	if (index > count-1) {
+		cout << "Cannot get element" << endl;
+		exit(-1);
+	}
+
+	for (int i = 0; i < index; i++) {
+		tmp = tmp->next;
+	}
+	value = tmp->data;
+	return value;
+}
+
+template <class Type>
+Type& LinkedList<Type>::operator[](int index)
+{
+	Node<Type> *tmp;
+	Type value;
+
+	tmp = header;
+	if (count == 0) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	if (index == 0) {
+		value = tmp->data;
+		return tmp->data;
+	}
+	if (index > count-1) {
+		cout << "Cannot get element" << endl;
+		exit(-1);
+	}
+
+	for (int i = 0; i < index; i++) {
+		tmp = tmp->next;
+	}
+	return tmp->data;
+}
+
+template <class Type>
+Type LinkedList<Type>::getFirst()
+{
+	Node<Type> *tmp;
+	Type value;
+
+	if (count == 0) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	tmp = header;
+	value = tmp->data;
+	return value;
+}
+
+template <class Type>
+Type LinkedList<Type>::getLast()
+{
+	Node<Type> *tmp;
+	Type value;
+
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	tmp = header;
+	while (tmp->next != NULL) {
+		tmp = tmp->next;
+	}
+	value = tmp->data;
+	return value;
+}
+
+template <class Type>
+int LinkedList<Type>::indexOf(Type x) 
+{
+	Node<Type> *tmp;
+	int pos = 0;
+
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	tmp = header;
+	while (tmp != NULL) {
+		if (tmp->data == x) {
+			return pos;
+		}
+		pos++;
+		tmp = tmp->next;
+	}
+
+	cout << "No such element" << endl;
+	exit(-1);
+}
+
+template <class Type>
+int LinkedList<Type>::lastIndexOf(Type x) 
+{
+	Node<Type> *tmp;
+	int pos;
+	int value = -1;
+
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	tmp = header;
+	pos = 0;
+	while (tmp != NULL) {
+		if (tmp->data == x) value = pos;
+		tmp = tmp->next;
+		pos++;
+	}
+	if (value == -1) {
+		cout << "No such element" << endl;
+		exit(-1);
+	}
+
+	return value;
+}
+
+template <class Type>
+void LinkedList<Type>::offer(Type x) 
+{
+	add(x);
+}
+
+template <class Type>
+void LinkedList<Type>::offerFirst(Type x) 
+{
+	addFirst(x);
+}
+
+template <class Type>
+void LinkedList<Type>::offerLast(Type x) 
+{
+	addLast(x);
+}
+
+template <class Type>
+Type LinkedList<Type>::peek() 
+{
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	return header->data;
+}
+
+template <class Type>
+Type LinkedList<Type>::peekFirst()
+{
+	return peek();
+}
+
+template <class Type>
+Type LinkedList<Type>::poll()
+{
+	return getFirst();
+}
+
+template <class Type>
+Type LinkedList<Type>::pollFirst()
+{
+	return getFirst();
+}
+	
+template <class Type>
+Type LinkedList<Type>::pollLast()
+{
+	return getLast();
+}
+
+template <class Type>
+Type LinkedList<Type>::remove() 
+{
+	Node<Type> *tmp;
+	Type value;
+	
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	if (count == 1) {
+		value = header->data;
+		header = NULL;
+		count = 0;
+		return value;
+	}
+	tmp = header;
+	value = header->data;
+	header = tmp->next;
+	count--;
+	delete tmp;
+	return value;
+}
+
+template <class Type>
+Type LinkedList<Type>::removeAt(int index)
+{
+	Node<Type> *tmp;
+	Node<Type> *follow;
+	Type value;
+
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	if (count == 1 && index == 0) {
+		value = header->data;
+		header = NULL;
+		count = 0;
+		return value;
+	}
+	if (index == 0) {
+		value = header->data;
+		tmp = header->next;
+		header = tmp;
+		count--;
+		return value;
+	}
+	if (index > count-1) {
+		cout << "Incorrect index" << endl;
+		exit(-1);
+	}
+	tmp = header;
+	for (int i = 0; i < index; i++) {
+		follow = tmp;
+		tmp = tmp->next;
+	}
+	value = tmp->data;
+	follow->next = tmp->next;
+	count--;
+	delete tmp;
+	return value;
+}
+
+template <class Type>
+Type LinkedList<Type>::remove(Type x)
+{
+	Node<Type> *tmp;
+	Node<Type> *follow;
+	int pos = 0;
+
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	if (header->data == x) {
+		header = header->next;
+		count--;
+		return pos;
+	}
+	tmp = header;
+	while (tmp != NULL) {
+		if (tmp->data == x) {
+			follow->next = tmp->next;
+			count--;
+			delete tmp;
+			return pos;
+		}
+		follow = tmp;
+		tmp = tmp->next;
+		pos++;
+	}
+	cout << "No such element" << endl;
+	exit(-1);
+}
+
+template <class Type>
+Type LinkedList<Type>::removeFirst()
+{
+	Type value;
+
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	value = header->data;
+	header = header->next;
+	count--;
+	return value;
+}
+
+template <class Type>
+Type LinkedList<Type>::removeLast()
+{
+	Node<Type> *tmp;
+	Node<Type> *follow;
+	Type value = -1;
+
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	if (count == 1) {
+		value = header->data;
+		header = NULL;
+		count = 0;
+		return value;
+	}
+	tmp = header;
+	while (tmp->next != NULL) {
+		follow = tmp;
+		tmp = tmp->next;
+	}
+	count--;
+	value = tmp->data;
+	follow->next = NULL;
+	delete tmp;
+	return value;
+}
+
+template <class Type>
+void LinkedList<Type>::set(int index, Type x)
+{
+	Node<Type> *tmp;
+	
+	if (header == NULL) {
+		cout << "List is empty" << endl;
+		exit(-1);
+	}
+	if (index > count-1) {
+		cout << "Incorrect index" << endl;
+		exit(-1);
+	}
+	tmp = header;
+	for (int i = 0; i < index; i++) {
+		tmp = tmp->next;
+	}
+	tmp->data = x;
+	return;
+}
+
+template <class Type>
+Type *LinkedList<Type>::toArray()
+{
+	Type* arr = (int *)malloc(sizeof(Type) * count);
+	Node<Type> *tmp;
+
+	tmp = header;
+	for (int i = 0; i < count; i++) {
+		arr[i] = tmp->data;
+		tmp = tmp->next;
+	}
+
+	return arr;
+}
