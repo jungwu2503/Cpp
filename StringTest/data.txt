@@ -1,0 +1,6 @@
+5
+kim 10
+lee 30
+park 50
+song 80
+chi 40
