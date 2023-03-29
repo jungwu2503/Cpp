@@ -62,9 +62,9 @@ main()
 	printf("list1 = ");
 	print(&list1);
 	
-	//removeAt(&list1, 0); // <====================
-	//printf("list1 = ");
-	//print(&list1);
+	removeAt(&list1, 1); 
+	printf("list1 = ");
+	print(&list1);
 
 	arr = toArray(&list1);
 	printf("[ ");

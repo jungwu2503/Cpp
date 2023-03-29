@@ -34,7 +34,6 @@ void removeNode(Node *node)
 	//printf("node->data = %d\n", node->data);
 	node->prev->next = node->next;
 	node->next->prev = node->prev;
-	free(node);
 }
 
 /*main()
@@ -326,17 +325,35 @@ void set(LinkedList *l, int index, int x)
 void removeData(LinkedList *l, int x)
 {
 	Node *tmp;
+	Node *toDelete;
 	int i;
 
 	if (l->header == NULL) {
 		printf("List is empty\n");	
 		return;
 	}
+	if (l->header->data == x) {
+		if (l->count == 1) {
+			toDelete = l->header;
+			l->header = NULL;
+			l->count = 0;
+			free(toDelete);
+			return;
+		}
+		toDelete = l->header;
+		l->header = l->header->next;
+		l->count = l->count - 1;
+		removeNode(toDelete);
+		free(toDelete);
+		return;
+	}
 	tmp = l->header;
-	l->count = l->count - 1;
 	for (i = 0; i < l->count; i++) {
 		if (tmp->data == x) {
+			l->count = l->count - 1;
+			toDelete = tmp;
 			removeNode(tmp);
+			free(toDelete);
 			return;
 		}
 		tmp = tmp->next;
@@ -348,24 +365,39 @@ void removeData(LinkedList *l, int x)
 void removeAt(LinkedList *l, int index)
 {
 	Node *tmp;
+	Node *toDelete;
 	int i;
 
 	if (l->header == NULL) {
 		printf("List is empty\n");	
 		return;
 	}
+	if (index > l->count-1) {
+		printf("Index error\n");	
+		return;
+	}
+	if (index == 0) {
+		if (l->count == 1) {
+			toDelete = l->header;
+			l->header = NULL;
+			l->count = 0;
+			free(toDelete);
+			return;
+		}
+		toDelete = l->header;
+		l->header = l->header->next;
+		l->count = l->count - 1;
+		removeNode(toDelete);
+		free(toDelete);
+		return;
+	}
 	tmp = l->header;
 	l->count = l->count - 1;
-	/*if (index == 0) {
-		tmp->prev->next = tmp->next;
-		tmp->next->prev = tmp->prev;
-		free(tmp);
-		return;
-	}*/
 	for (i = 0; i < index; i++) {
 		tmp = tmp->next;
 	}
 	removeNode(tmp);
+	free(tmp);
 }
 
 int *toArray(LinkedList *l)
