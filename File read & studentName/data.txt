@@ -1,0 +1,7 @@
+kim 30
+lee 70
+park 20
+kwon 80
+oh 10
+asddfassasfsd 40
+seong 80
