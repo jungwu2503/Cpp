@@ -1,0 +1,6 @@
+whiskey 40
+beer 5
+wine 9
+soju 17
+cocktail 4
+korea_rice_wine 7
